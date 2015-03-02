@@ -27,9 +27,9 @@ while True:
     data = ser.readline()
     if len(data) > 0:
         if "+CMTI: \"SM\"" in data:
-            
-
+            print("Incoming SMS")    
         if "RING" in data:
+            print("Incoming Call")
             
     consumer.register_callback(import_feed_callback)
     consumer.wait() # Go into the consumer loop.
