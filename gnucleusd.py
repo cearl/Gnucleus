@@ -31,7 +31,5 @@ while True:
         if "RING" in data:
             print("Incoming Call")
             
-    consumer.register_callback(import_feed_callback)
-    consumer.wait() # Go into the consumer loop.
     time.sleep(0.5)
     
