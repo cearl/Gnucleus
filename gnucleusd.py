@@ -26,10 +26,6 @@ GsmModem_init()
 while True:
     data = ser.readline()
     if len(data) > 0:
-        if "+CMTI: \"SM\"" in data:
-            print("Incoming SMS")    
-        if "RING" in data:
-            print("Incoming Call")
-            
+        print(data)    
     time.sleep(0.5)
     
