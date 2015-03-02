@@ -27,11 +27,6 @@ def GsmModem_init ():
 def GsmVoiceDial(number):
     GsmModemSendCommand(GsmVoiceDialCommand + number + ";")
 
-# TODO switch to argparse
-if sys.argv[1] == "--command" or sys.argv[1] == "-c": 
-    #send generic command to modem
-    GsmModemSendCommand(sys.argv[2])
-    exit(0)
 
 if sys.argv[1] == "--hangup" or sys.argv[1] == "-h":
     GsmModemSendCommand(GsmHangUp)
