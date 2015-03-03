@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # This was developed with the SIM900 chip
-import serial, time, sys, os
+import serial, time, sys, os,pygtk, pynotify
 line = []
 ser = serial.Serial(
     port='/dev/ttyACM0',
@@ -49,11 +49,19 @@ def SmsGetFromMemory(blockID):
     smsSender = smsHeaderParse[1]
     smsSender = smsSender.strip('"')
     smsDict = {smsSender:smsMessage}
-    command = "/usr/bin/notify-send " + smsSender + smsMessage
+    alert(smsSender,smsMessage) 
     print smsDict
     os.system(command)
 
+def alert(summary, message):
+    if not pynotify.init("Basics"):
+        print("pynotify not available")
+    n = pynotify.Notification(summary, message)
+    if not n.show():
+        print "Failed to send notification"
+
 GsmModem_init()
+alert("Gnucleus","Gnucleus core started")
 
 while True:
     data = ser.readline()
@@ -69,6 +77,6 @@ while True:
      
         if GsmIncomingCall in data:
             GsmCaller = ser.readline()     
-            print GsmCaller 
+            alert("INCOMING CALL", GsmCaller) 
    
     
