@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # This was developed with the SIM900 chip
-import serial, time, sys
+import serial, time, sys, os
 line = []
 ser = serial.Serial(
     port='/dev/ttyACM0',
@@ -49,7 +49,9 @@ def SmsGetFromMemory(blockID):
     smsSender = smsHeaderParse[1]
     smsSender = smsSender.strip('"')
     smsDict = {smsSender:smsMessage}
+    command = "/usr/bin/notify-send " + smsSender + smsMessage
     print smsDict
+    os.system(command)
 
 GsmModem_init()
 
