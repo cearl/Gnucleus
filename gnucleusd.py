@@ -38,7 +38,6 @@ def GsmDeleteSMS(blockID):
     # dont fill up SMS blocks
     GsmModemSendCommand(smsDeleteMemoryBlock + blockID)
     
-
 def SmsGetFromMemory(blockID):
     smsDict = {}
     GsmModemSendCommand(smsRead + blockID)   
@@ -51,18 +50,18 @@ def SmsGetFromMemory(blockID):
     smsSender = smsSender.strip('"')
     smsDict = {smsSender:smsMessage}
     alert(smsSender,smsMessage) 
-    print smsDict
+    
    
-
 def alert(summary, message):
+    # attempt libnotify alert, if not print to stdout
     if not pynotify.init("icon-summary-body"):
         pass
     n = pynotify.Notification(summary, message,)
     if not n.show():
-        print(summary, message)
+        print( "SMS:" + summary + message)
 
 GsmModem_init()
-alert("Gnucleus","core started")
+alert("Gnucleus","daemon started")
 
 while True:
     data = ser.readline()
