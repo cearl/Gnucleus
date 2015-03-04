@@ -12,6 +12,7 @@ GsmAT = "AT"
 GsmSetFunc = "AT+CFUN=1"
 GsmSetSMSMode = "AT+CMGF=1"
 GsmSMSCommand = "AT+CMGS="
+GsmSMSDeleteAll = "AT+CMGDA=\"DEL ALL\""
 
 number = sys.argv[1]
 message = sys.argv[2]

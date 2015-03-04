@@ -26,16 +26,17 @@ def GsmModemSendCommand(GsmCommand):
     time.sleep(0.25) 
 
 def GsmModem_init ():
-     print("Sending modem init sequence")
+     print("Sending modem init sequence...")
      GsmModemSendCommand(GsmAT)
      GsmModemSendCommand(GsmSetFunc)
      GsmModemSendCommand(GsmSetCRC)
      GsmModemSendCommand(GsmSetCallerID)
      GsmModemSendCommand(GsmSetAlert)
+     print("done!")
 
 def GsmDeleteSMS(blockID):
     # dont fill up SMS blocks
-    GsmModemSendCommand(blockID)
+    GsmModemSendCommand(smsDeleteMemoryBlock + blockID)
     
 
 def SmsGetFromMemory(blockID):
@@ -58,7 +59,7 @@ def alert(summary, message):
         pass
     n = pynotify.Notification(summary, message,)
     if not n.show():
-        pass
+        print(summary, message)
 
 GsmModem_init()
 alert("Gnucleus","core started")
