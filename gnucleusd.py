@@ -10,6 +10,8 @@ ser = serial.Serial(
     bytesize=serial.EIGHTBITS
 )
 
+DEBUG = False
+
 GsmAT = "AT"
 GsmSetFunc = "AT+CFUN=1"
 GsmSetCRC = "AT+CRC=1" 
@@ -27,11 +29,14 @@ def GsmModemSendCommand(GsmCommand):
 
 def GsmModem_init ():
      print("Sending modem init sequence...")
-     GsmModemSendCommand(GsmAT)
-     GsmModemSendCommand(GsmSetFunc)
-     GsmModemSendCommand(GsmSetCRC)
-     GsmModemSendCommand(GsmSetCallerID)
-     GsmModemSendCommand(GsmSetAlert)
+     try:
+         GsmModemSendCommand(GsmAT)
+         GsmModemSendCommand(GsmSetFunc)
+         GsmModemSendCommand(GsmSetCRC)
+         GsmModemSendCommand(GsmSetCallerID)
+         GsmModemSendCommand(GsmSetAlert)
+     except:
+         print("Failed to communicate with modem on " + port )
      print("done!")
 
 def GsmDeleteSMS(blockID):
@@ -76,7 +81,11 @@ while True:
             GsmDeleteSMS(blockID)
      
         if GsmIncomingCall in data:
-            GsmCaller = ser.readline()     
-            alert("INCOMING CALL", GsmCaller) 
-   
+            Blank  = ser.readline()     
+            GsmCaller = ser.readline()
+            GsmCaller = GsmCaller.split('\"')
+            alert("INCOMING CALL", GsmCaller[1]) 
+        if DEBUG == True:
+            print data
+           
     
