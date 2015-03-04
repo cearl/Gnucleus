@@ -51,17 +51,17 @@ def SmsGetFromMemory(blockID):
     smsDict = {smsSender:smsMessage}
     alert(smsSender,smsMessage) 
     print smsDict
-    os.system(command)
+   
 
 def alert(summary, message):
-    if not pynotify.init("Basics"):
-        print("pynotify not available")
-    n = pynotify.Notification(summary, message)
+    if not pynotify.init("icon-summary-body"):
+        pass
+    n = pynotify.Notification(summary, message,)
     if not n.show():
-        print "Failed to send notification"
+        pass
 
 GsmModem_init()
-alert("Gnucleus","Gnucleus core started")
+alert("Gnucleus","core started")
 
 while True:
     data = ser.readline()
