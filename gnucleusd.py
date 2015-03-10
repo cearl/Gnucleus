@@ -1,21 +1,23 @@
 #!/usr/bin/python
 # This was developed with the SIM900 chip
-import serial, time, sys, os,pygtk, pynotify
+import serial, time, sys, os,pygtk, pynotify, urwid
+from Tkinter import *
 line = []
 ser = serial.Serial(
-    port='/dev/ttyACM0',
+    port='/dev/ttyACM2',
     baudrate=19200,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
     bytesize=serial.EIGHTBITS
 )
 
-DEBUG = False
+DEBUG = True
 
 GsmAT = "AT"
 GsmSetFunc = "AT+CFUN=1"
 GsmSetCRC = "AT+CRC=1" 
 GsmIncomingCall = "+CRING" 
+GsmAnswerCall = "ATA"
 GsmSetCallerID = "AT+CLIP=1"
 GsmSetAlert = "AT+CALS=1"
 smsDeleteMemoryBlock="AT+CMGD="
@@ -65,6 +67,7 @@ def alert(summary, message):
     if not n.show():
         print( "SMS:" + summary + message)
 
+
 GsmModem_init()
 alert("Gnucleus","daemon started")
 
@@ -87,5 +90,5 @@ while True:
             alert("INCOMING CALL", GsmCaller[1]) 
         if DEBUG == True:
             print data
-           
+              
     
