@@ -1,4 +1,4 @@
-// Arduino File for the Gnuclear Hardware backend 
+
 #include <SoftwareSerial.h>
 #include <Wire.h>
 #include <Adafruit_MCP23017.h>
@@ -13,6 +13,7 @@ Adafruit_RGBLCDShield lcd = Adafruit_RGBLCDShield();
 #define VIOLET 0x5
 #define WHITE 0x7
 
+char color[7]={'RED','GREEN','YELLOW','BLUE','VIOLET','TEAL','WHITE'};
 SoftwareSerial GPRS(7, 8);
 unsigned char buffer[64]; // buffer array for data recieve over serial port
 int count=0;     // counter for buffer array 
@@ -46,35 +47,22 @@ void lcdPrint(uint8_t color, String message)
 
 void incomingAlert(String message)
 {
-  
-  
-   lcdPrint(RED,message);
+  // Generate random color and rington
+  lcdPrint(color[random(1,7)],"Incoming Call");
+  int toneCounter = 25;
+  for(int i =0;i<toneCounter;i++)
+  {
+   
    scanKeys(BUTTON_SELECT,"ATA");
-   tone(12,2600,200);
-   delay(100);
-   lcdPrint(GREEN,message);
-   scanKeys(BUTTON_SELECT,"ATA");
-   tone(12,260,200);
-   delay(100);
-   lcdPrint(TEAL,message);
-   scanKeys(BUTTON_SELECT,"ATA");
-   delay(100);
-   lcdPrint(YELLOW,message);
-   scanKeys(BUTTON_SELECT,"ATA");
-   tone(12,2600,200);
-   delay(100);
-   lcdPrint(BLUE,message);
-   scanKeys(BUTTON_SELECT,"ATA");
-   tone(12,260,200);
-   delay(100);
-   lcdPrint(VIOLET,message);
-   scanKeys(BUTTON_SELECT,"ATA");
-   tone(12,2600,200);
-   delay(100);
-   lcdPrint(BLUE,message);
-   scanKeys(BUTTON_SELECT,"ATA");
-   tone(12,260,200);
-   delay(100);
+   // needed a delay without causing button lag
+   for(int i=50;i>0;i--)
+   {
+    scanKeys(BUTTON_SELECT,"ATA"); 
+   }
+   //delay(random(20,100));
+   tone(12,random(100,1000),random(50,200));
+   lcd.setBacklight(WHITE);
+  }
    
 }
 
@@ -88,7 +76,7 @@ void scanKeys(int button, String gsmCommand)
 }
 
 void loop()
-{
+{  
  
 
   
@@ -97,14 +85,13 @@ void loop()
     while(GPRS.available())          // reading data into char array 
     {
       buffer[count++]=GPRS.read();     // writing data into array
-      
       // Detect incoming calls and SMS
       if(strstr((const char*)buffer,"+CRING:")){
         incomingAlert("Incoming Call");
         clearBufferArray();
-        buffer[count++]=GPRS.read();
+        //buffer[count++]=GPRS.read();
         lcd.clear();
-        lcd.setBacklight(VIOLET);
+        lcd.setBacklight(color[random(1,7)]);
       }     
       
       if(strstr((const char*)buffer,"+CMTI: \"SM\"")){
@@ -112,22 +99,21 @@ void loop()
         delay(1000);
         clearBufferArray();
       }
-     if(buffer[count] == '\n') {
+      
+     if(buffer[count-1] == '\n') {
       
        break;
      }
      // menu code here
       
   }
-    Serial.write(buffer,count);            // if no data transmission ends, write buffer to hardware serial port
+    
     clearBufferArray();              // call clearBufferArray function to clear the storaged data from the array
     count = 0;                       // set counter of while loop to zero
  
+  } 
+
  
-  }
-  if (Serial.available())            // if data is available on hardwareserial port ==> data is comming from PC or notebook
-    GPRS.write(Serial.read());       // write it to the GPRS shield
-}
 void clearBufferArray()              // function to clear buffer array
 {
   for (int i=0; i<count;i++)
